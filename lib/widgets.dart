@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 class ProdutivityButton extends StatelessWidget {
   final Color color;
   final String text;
-  final double size;
+  final double? size;
   final VoidCallback onPressed;
 
   const ProdutivityButton({
     Key? key,
     required this.color,
     required this.text,
-    required this.size,
     required this.onPressed,
+    this.size,
   }) : super(key: key);
 
   @override
@@ -19,7 +19,7 @@ class ProdutivityButton extends StatelessWidget {
     return MaterialButton(
       onPressed: this.onPressed,
       color: this.color,
-      minWidth: size,
+      minWidth: (this.size != null) ? this.size : 0,
       child: Text(this.text, style: TextStyle(color: Colors.white)),
     );
   }

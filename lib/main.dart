@@ -36,7 +36,7 @@ class TimerHomePage extends StatelessWidget {
                   Padding(padding: EdgeInsets.all(defaultPadding)),
                   Expanded(
                     child: ProdutivityButton(
-                      color: Color(0xff009688),
+                      color: Color(0xFFFF4081),
                       text: "Work",
                       onPressed: emptyMethod,
                     ),
@@ -63,14 +63,14 @@ class TimerHomePage extends StatelessWidget {
 
               Expanded(
                 child: CircularPercentIndicator(
-                  radius: availableWidth / 2,
+                  radius: availableWidth / 3,
                   lineWidth: 10.0,
                   percent: 1,
                   center: Text(
                     "30:00",
                     style: Theme.of(context).textTheme.displayLarge,
                   ),
-                  progressColor: Color(0xff009688),
+                  progressColor: Color(0xFFFF4081),
                 ),
               ),
 
@@ -87,7 +87,7 @@ class TimerHomePage extends StatelessWidget {
                   Padding(padding: EdgeInsets.all(defaultPadding)),
                   Expanded(
                     child: ProdutivityButton(
-                      color: Color(0xff009688),
+                      color: Color(0xFFFF4081),
                       text: "Restart",
                       onPressed: emptyMethod,
                     ),

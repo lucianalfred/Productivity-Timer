@@ -1,12 +1,18 @@
 import 'dart:async';
 
+import 'package:productivity_timer/timermodel.dart';
+
 class CountDownTimer {
   double _radius = 1;
   bool _isActive = true;
   Timer? timer;
-  Duration? _time;
-  Duration? _fulltime;
+  Duration _time = Duration.zero;
+  Duration _fulltime = Duration.zero;
 
+  CountDownTimer({required Duration initialTime}) {
+    _time = initialTime;
+    _fulltime = initialTime;
+  }
   String returnTime(Duration t) {
     String minutes = (t.inMinutes < 10)
         ? '0' + t.inMinutes.toString()
@@ -18,5 +24,20 @@ class CountDownTimer {
         : numSeconds.toString();
     String formattedTime = minutes + ":" + seconds;
     return formattedTime;
+  }
+
+  Stream<TimerModel> stream() async* {
+    yield* Stream.periodic(Duration(seconds: 1), (int a) {
+      String time;
+      if (this._isActive) {
+        _time = _time - Duration(seconds: 1);
+        _radius = _time.inSeconds / _fulltime.inSeconds;
+        if (_time.inSeconds <= 0) {
+          _isActive = false;
+        }
+      }
+      time = returnTime(_time);
+      return TimerModel(time, _radius);
+    });
   }
 }

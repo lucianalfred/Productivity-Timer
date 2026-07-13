@@ -24,6 +24,16 @@ class CountDownTimer {
     _fulltime = _time;
   }
 
+  void stopTimer() {
+    this._isActive = false;
+  }
+
+  void startTimer() {
+    if (_time.inSeconds > 0) {
+      this._isActive = true;
+    }
+  }
+
   String returnTime(Duration t) {
     String minutes = (t.inMinutes < 10)
         ? '0' + t.inMinutes.toString()

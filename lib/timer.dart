@@ -8,11 +8,18 @@ class CountDownTimer {
   Timer? timer;
   Duration _time = Duration.zero;
   Duration _fulltime = Duration.zero;
+  int work = 30;
 
   CountDownTimer({required Duration initialTime}) {
     _time = initialTime;
     _fulltime = initialTime;
   }
+  void startWork() {
+    _radius = 1;
+    _time = Duration(minutes: this.work, seconds: 0);
+    _fulltime = _time;
+  }
+
   String returnTime(Duration t) {
     String minutes = (t.inMinutes < 10)
         ? '0' + t.inMinutes.toString()

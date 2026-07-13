@@ -10,10 +10,14 @@ class CountDownTimer {
   Duration _fulltime = Duration.zero;
   int work = 30;
 
-  CountDownTimer({required Duration initialTime}) {
+  CountDownTimer({Duration initialTime = const Duration(minutes: 30)}) {
     _time = initialTime;
     _fulltime = initialTime;
   }
+
+  double get percent => _radius;
+  String get time => returnTime(_time);
+
   void startWork() {
     _radius = 1;
     _time = Duration(minutes: this.work, seconds: 0);

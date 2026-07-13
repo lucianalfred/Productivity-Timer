@@ -2,6 +2,9 @@ import "package:flutter/material.dart";
 import "package:percent_indicator/circular_percent_indicator.dart";
 import "package:productivity_timer/widgets.dart";
 
+import './timer.dart';
+import './timermodel.dart';
+
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
@@ -19,10 +22,13 @@ class MyApp extends StatelessWidget {
 
 class TimerHomePage extends StatelessWidget {
   final double defaultPadding = 5.0;
-  // final CountDownTimer timer = CountDownTimer();
+
+  final CountDownTimer timer = CountDownTimer();
 
   @override
   Widget build(BuildContext context) {
+    timer.startWork();
+
     return Scaffold(
       appBar: AppBar(title: Text("My Work Timer")),
       body: LayoutBuilder(
@@ -60,17 +66,26 @@ class TimerHomePage extends StatelessWidget {
                   Padding(padding: EdgeInsets.all(defaultPadding)),
                 ],
               ),
-
               Expanded(
-                child: CircularPercentIndicator(
-                  radius: availableWidth / 3,
-                  lineWidth: 10.0,
-                  percent: 1,
-                  center: Text(
-                    "30:00",
-                    style: Theme.of(context).textTheme.displayLarge,
-                  ),
-                  progressColor: Color(0xFFFF4081),
+                child: StreamBuilder(
+                  initialData: "00:00",
+                  stream: timer.stream(),
+                  builder: (BuildContext context, AsyncSnapshot snapshot) {
+                    TimerModel timer = (snapshot.data == '00:00')
+                        ? TimerModel('00:00', 1)
+                        : snapshot.data;
+                    return Expanded(
+                      child: CircularPercentIndicator(
+                        radius: availableWidth / 4,
+                        lineWidth: 10.0,
+                        center: Text(
+                          timer.time ?? "00:00",
+                          style: Theme.of(context).textTheme.displayLarge,
+                        ),
+                        progressColor: Color(0xFFFF4081),
+                      ),
+                    );
+                  },
                 ),
               ),
 

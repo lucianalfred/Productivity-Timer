@@ -6,4 +6,17 @@ class CountDownTimer {
   Timer? timer;
   Duration? _time;
   Duration? _fulltime;
+
+  String returnTime(Duration t) {
+    String minutes = (t.inMinutes < 10)
+        ? '0' + t.inMinutes.toString()
+        : t.inMinutes.toString();
+
+    int numSeconds = t.inSeconds - (t.inMinutes * 60);
+    String seconds = (numSeconds < 10)
+        ? '0' + numSeconds.toString()
+        : numSeconds.toString();
+    String formattedTime = minutes + ":" + seconds;
+    return formattedTime;
+  }
 }

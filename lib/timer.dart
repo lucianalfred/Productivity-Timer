@@ -8,7 +8,10 @@ class CountDownTimer {
   Timer? timer;
   Duration _time = Duration.zero;
   Duration _fulltime = Duration.zero;
+
   int work = 30;
+  int shortBreak = 5;
+  int longBreak = 20;
 
   CountDownTimer({Duration initialTime = const Duration(minutes: 30)}) {
     _time = initialTime;
@@ -17,6 +20,12 @@ class CountDownTimer {
 
   double get percent => _radius;
   String get time => returnTime(_time);
+
+  void startBreak(bool isShort) {
+    _radius = 1;
+    _time = Duration(minutes: (isShort) ? shortBreak : longBreak, seconds: 0);
+    _fulltime = _time;
+  }
 
   void startWork() {
     _radius = 1;

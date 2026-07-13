@@ -44,7 +44,7 @@ class TimerHomePage extends StatelessWidget {
                     child: ProdutivityButton(
                       color: Color(0xFFFF4081),
                       text: "Work",
-                      onPressed: emptyMethod,
+                      onPressed: () => timer.startWork(),
                     ),
                   ),
                   Padding(padding: EdgeInsets.all(defaultPadding)),
@@ -52,7 +52,7 @@ class TimerHomePage extends StatelessWidget {
                     child: ProdutivityButton(
                       color: Color(0xff607D8B),
                       text: "Short Break",
-                      onPressed: emptyMethod,
+                      onPressed: () => timer.startBreak(true),
                     ),
                   ),
                   Padding(padding: EdgeInsets.all(defaultPadding)),
@@ -60,7 +60,7 @@ class TimerHomePage extends StatelessWidget {
                     child: ProdutivityButton(
                       color: Color(0xff455A64),
                       text: "Long Break",
-                      onPressed: emptyMethod,
+                      onPressed: () => timer.startBreak(false),
                     ),
                   ),
                   Padding(padding: EdgeInsets.all(defaultPadding)),
@@ -96,7 +96,7 @@ class TimerHomePage extends StatelessWidget {
                     child: ProdutivityButton(
                       color: Color(0xff212121),
                       text: "Stop",
-                      onPressed: emptyMethod,
+                      onPressed: () => timer.stopTimer(),
                     ),
                   ),
                   Padding(padding: EdgeInsets.all(defaultPadding)),
@@ -104,7 +104,7 @@ class TimerHomePage extends StatelessWidget {
                     child: ProdutivityButton(
                       color: Color(0xFFFF4081),
                       text: "Restart",
-                      onPressed: emptyMethod,
+                      onPressed: () => timer.startTimer(),
                     ),
                   ),
                   Padding(padding: EdgeInsets.all(defaultPadding)),

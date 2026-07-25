@@ -1,78 +1,47 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'widgets.dart';
+import './widgets.dart';
 
 class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Settings'),
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon: Icon(Icons.arrow_back),
-        ),
-      ),
+      appBar: AppBar(title: Text('Settings')),
       body: Settings(),
     );
   }
 }
 
 class Settings extends StatefulWidget {
-  const Settings({super.key});
-
   @override
-  State<Settings> createState() => _SettingsState();
+  _SettingsState createState() => _SettingsState();
 }
 
 class _SettingsState extends State<Settings> {
-  TextStyle textStyle = TextStyle(fontSize: 24, fontWeight: FontWeight.bold);
-  SharedPreferences? prefs;
-
   late TextEditingController txtWork;
   late TextEditingController txtShort;
   late TextEditingController txtLong;
-
   static const String WORKTIME = "workTime";
   static const String SHORTBREAK = "shortBreak";
   static const String LONGBREAK = "longBreak";
-
-  int shortBreak = 25;
-  int workTime = 5;
-  int longBreak = 15;
+  late int workTime;
+  late int shortBreak;
+  late int longBreak;
+  late SharedPreferences prefs;
 
   @override
   void initState() {
-    super.initState();
-    TextEditingController txtWork = TextEditingController(
-      text: workTime.toString(),
-    );
-    TextEditingController txtShort = TextEditingController(
-      text: shortBreak.toString(),
-    );
-    TextEditingController txtLong = TextEditingController(
-      text: longBreak.toString(),
-    );
+    txtWork = TextEditingController();
+    txtShort = TextEditingController();
+    txtLong = TextEditingController();
     readSettings();
-  }
-
-  @override
-  void dispose() {
-    txtWork.dispose();
-    txtShort.dispose();
-    txtLong.dispose();
-    super.dispose();
+    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    controller:
-    txtWork;
-    controller:
-    txtShort;
-    controller:
-    txtLong;
+    TextStyle textStyle = TextStyle(fontSize: 24);
     return Container(
       child: GridView.count(
         scrollDirection: Axis.vertical,
@@ -84,44 +53,56 @@ class _SettingsState extends State<Settings> {
           Text("Work", style: textStyle),
           Text(""),
           Text(""),
-          SettingsButton(Color(0xFFFF4081), "+", -1),
+          SettingsButton(Color(0xff455A64), "-", -1, WORKTIME, updateSetting),
           TextField(
             style: textStyle,
+            controller: txtWork,
             textAlign: TextAlign.center,
             keyboardType: TextInputType.number,
           ),
-          SettingsButton(Color(0xFFFF4081), "-", -1),
+          SettingsButton(Color(0xff536DFE), "+", 1, WORKTIME, updateSetting),
           Text("Short", style: textStyle),
           Text(""),
           Text(""),
-          SettingsButton(Color(0xFFFF4081), "+", -1),
+          SettingsButton(Color(0xff455A64), "-", -1, SHORTBREAK, updateSetting),
           TextField(
             style: textStyle,
             textAlign: TextAlign.center,
+            controller: txtShort,
             keyboardType: TextInputType.number,
           ),
-          SettingsButton(Color(0xFFFF4081), "-", -1),
+          SettingsButton(Color(0xff536DFE), "+", 1, SHORTBREAK, updateSetting),
           Text("Long", style: textStyle),
           Text(""),
           Text(""),
-          SettingsButton(Color(0xFFFF4081), "+", -1),
+          SettingsButton(Color(0xff455A64), "-", -1, LONGBREAK, updateSetting),
           TextField(
             style: textStyle,
             textAlign: TextAlign.center,
+            controller: txtLong,
             keyboardType: TextInputType.number,
           ),
-          SettingsButton(Color(0xFFFF4081), "-", -1),
+          SettingsButton(Color(0xff536DFE), "+", 1, LONGBREAK, updateSetting),
         ],
         padding: const EdgeInsets.all(20.0),
       ),
     );
   }
 
-  void readSettings() async {
+  readSettings() async {
     prefs = await SharedPreferences.getInstance();
-    int workTime = prefs?.getInt(WORKTIME) ?? 25;
-    int shortBreak = prefs?.getInt(SHORTBREAK) ?? 5;
-    int longBreak = prefs?.getInt(LONGBREAK) ?? 15;
+    int workTime = prefs.getInt(WORKTIME) ?? 25;
+    if (workTime == null) {
+      await prefs.setInt(WORKTIME, int.parse('30'));
+    }
+    int shortBreak = prefs.getInt(SHORTBREAK) ?? 5;
+    if (shortBreak == null) {
+      await prefs.setInt(SHORTBREAK, int.parse('5'));
+    }
+    int longBreak = prefs.getInt(LONGBREAK) ?? 15;
+    if (longBreak == null) {
+      await prefs.setInt(LONGBREAK, int.parse('20'));
+    }
     setState(() {
       txtWork.text = workTime.toString();
       txtShort.text = shortBreak.toString();
@@ -133,7 +114,7 @@ class _SettingsState extends State<Settings> {
     switch (key) {
       case WORKTIME:
         {
-          int workTime = prefs.getInt(key) ?? 30;
+          int workTime = prefs.getInt(WORKTIME) ?? 25;
           workTime += value;
           if (workTime >= 1 && workTime <= 180) {
             prefs.setInt(WORKTIME, workTime);
@@ -142,10 +123,31 @@ class _SettingsState extends State<Settings> {
             });
           }
         }
+        break;
       case SHORTBREAK:
-        {}
+        {
+          int short = prefs.getInt(SHORTBREAK) ?? 5;
+          short += value;
+          if (short >= 1 && short <= 120) {
+            prefs.setInt(SHORTBREAK, short);
+            setState(() {
+              txtShort.text = short.toString();
+            });
+          }
+        }
+        break;
       case LONGBREAK:
-        {}
+        {
+          int long = prefs.getInt(LONGBREAK) ?? 15;
+          long += value;
+          if (long >= 1 && long <= 180) {
+            prefs.setInt(LONGBREAK, long);
+            setState(() {
+              txtLong.text = long.toString();
+            });
+          }
+        }
+        break;
     }
   }
 }

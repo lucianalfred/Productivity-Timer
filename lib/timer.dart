@@ -1,53 +1,23 @@
 import 'dart:async';
 
-import 'package:productivity_timer/timermodel.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import './timermodel.dart';
 
 class CountDownTimer {
   double _radius = 1;
   bool _isActive = true;
-  Timer? timer;
-  Duration _time = Duration.zero;
-  Duration _fulltime = Duration.zero;
-
-  int work = 30;
+  late Timer timer;
+  late Duration _time;
+  late Duration _fullTime;
+  int work = 25;
   int shortBreak = 5;
-  int longBreak = 20;
-
-  CountDownTimer({Duration initialTime = const Duration(minutes: 30)}) {
-    _time = initialTime;
-    _fulltime = initialTime;
-  }
-
-  double get percent => _radius;
-  String get time => returnTime(_time);
-
-  void startBreak(bool isShort) {
-    _radius = 1;
-    _time = Duration(minutes: (isShort) ? shortBreak : longBreak, seconds: 0);
-    _fulltime = _time;
-  }
-
-  void startWork() {
-    _radius = 1;
-    _time = Duration(minutes: this.work, seconds: 0);
-    _fulltime = _time;
-  }
-
-  void stopTimer() {
-    this._isActive = false;
-  }
-
-  void startTimer() {
-    if (_time.inSeconds > 0) {
-      this._isActive = true;
-    }
-  }
+  int longBreak = 15;
 
   String returnTime(Duration t) {
     String minutes = (t.inMinutes < 10)
         ? '0' + t.inMinutes.toString()
         : t.inMinutes.toString();
-
     int numSeconds = t.inSeconds - (t.inMinutes * 60);
     String seconds = (numSeconds < 10)
         ? '0' + numSeconds.toString()
@@ -61,7 +31,7 @@ class CountDownTimer {
       String time;
       if (this._isActive) {
         _time = _time - Duration(seconds: 1);
-        _radius = _time.inSeconds / _fulltime.inSeconds;
+        _radius = _time.inSeconds / _fullTime.inSeconds;
         if (_time.inSeconds <= 0) {
           _isActive = false;
         }
@@ -69,5 +39,35 @@ class CountDownTimer {
       time = returnTime(_time);
       return TimerModel(time, _radius);
     });
+  }
+
+  Future readSettings() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    work = prefs.getInt('workTime') ?? 25;
+    shortBreak = prefs.getInt('shortBreak') ?? 5;
+    longBreak = prefs.getInt('longBreak') ?? 15;
+  }
+
+  void stopTimer() {
+    this._isActive = false;
+  }
+
+  void startTimer() {
+    if (_time.inSeconds > 0) {
+      this._isActive = true;
+    }
+  }
+
+  void startWork() async {
+    await readSettings();
+    _radius = 1;
+    _time = Duration(minutes: this.work, seconds: 0);
+    _fullTime = _time;
+  }
+
+  void startBreak(bool isShort) {
+    _radius = 1;
+    _time = Duration(minutes: (isShort) ? shortBreak : longBreak, seconds: 0);
+    _fullTime = _time;
   }
 }
